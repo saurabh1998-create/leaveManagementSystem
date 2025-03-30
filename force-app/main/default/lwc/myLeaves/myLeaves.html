@@ -1,0 +1,50 @@
+<template>
+
+    <lightning-card>
+        <lightning-button slot="actions" variant="broder-filled" icon-name="utility:add" onclick={newLeaveHandler}></lightning-button>
+
+        <lightning-datatable hide-checkbox-column key-field="Id" data={leavesData}
+            columns={columns} onrowaction={rowactionHandler}></lightning-datatable>
+
+        <template lwc:if={noRecords}>
+            <div class="slds-align_absolute-center slds-p-around_medium">
+                <h2>No Records Founds</h2>
+            </div>
+        </template>
+    </lightning-card>
+
+    <template lwc:if={showLeavePop}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"
+            class="slds-modal slds-fade-in-open slds-modal_small">
+            <div class="slds-modal__container">
+                <button onclick={popupCloseHandler} class="slds-button slds-button_icon slds-modal__close">
+                    <lightning-icon icon-name="utility:close" alternative-text="Close" title="close" size="small"
+                        variant="inverse"></lightning-icon>
+                    <span class="slds-assistive-text">Cancel and close</span>
+                </button>
+                <div class="slds-modal__header">
+                    <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate" tabindex="-1">Leave Request</h1>
+                </div>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <lightning-record-edit-form onsuccess={successHandler} object-api-name={objectApiName} record-id={recordId}>
+                        <lightning-input-field field-name={nameField}> </lightning-input-field>
+                        <lightning-input-field field-name={userField} value={currentUserId}> </lightning-input-field>
+                        <lightning-input-field field-name={FromDate}> </lightning-input-field>
+                        <lightning-input-field field-name={ToDateField}> </lightning-input-field>
+                        <lightning-input-field field-name={rasonField}> </lightning-input-field>
+                        <div class="slds-var-m-top_medium">
+                            <lightning-button variant="brand" type="submit" label="Save">
+                            </lightning-button>
+                            <lightning-button class="slds-p-left_small" label="Cancel" onclick={popupCloseHandler}>
+                            </lightning-button>
+                        </div>
+                    </lightning-record-edit-form>
+                </div>
+
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+
+    </template>
+
+</template>
