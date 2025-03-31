@@ -34,6 +34,7 @@ const columns = [
 export default class MyLeaves extends LightningElement {
 
     leavesData = []
+    leavesDataDetail
 
     columns = columns
     showLeavePop = false;
@@ -46,8 +47,10 @@ export default class MyLeaves extends LightningElement {
     userField=LEAVE_REQUEST_USER
     currentUserId = Id
 
+
    @wire(getMyLeaves)
     wiredLeaves({ error, data }) {
+        this.leavesDataDetail = data
         if (data) {
             this.leavesData = data.map( a =>({
                 ...a,
@@ -97,7 +100,7 @@ export default class MyLeaves extends LightningElement {
 
     successHandler(event){
         this.showLeavePop = false
-        refreshApex(this.leavesData)
+        refreshApex(this.leavesDataDetail)
 
         this.dispatchEvent(
             new ShowToastEvent({
@@ -107,6 +110,24 @@ export default class MyLeaves extends LightningElement {
             })
         )
 
+    }
+
+    submitHandler(event){
+        const fields = {...event.detail.fields}
+        fields.Status__c = 'Pending'
+
+        if(fields.From_Date__c > fields.To_Date__c){
+            event.preventDefault();
+            this.dispatchEvent(new ShowToastEvent({
+                title : 'End date must be after start date.',
+                message: 'error',
+                variant : 'error'
+            }))
+        }else{
+            this.template.querySelector('lightning-record-edit-form').submit(fields)
+                }
+
+    
     }
 
     newLeaveHandler(){
